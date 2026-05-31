@@ -78,7 +78,8 @@ function updateWranglerJsonc() {
 
 function runSetupCommands() {
     const commands = [
-    "bun add howler@^2.2.4"
+    "bun add howler@^2.2.4",
+    "bun add jszip"
 ];
     
     if (commands.length === 0) {
