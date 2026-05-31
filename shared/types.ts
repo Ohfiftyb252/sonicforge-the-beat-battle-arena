@@ -6,6 +6,8 @@ export interface ApiResponse<T = unknown> {
 export interface User {
   id: string;
   name: string;
+  avatarUrl?: string;
+  bio?: string;
 }
 export interface Chat {
   id: string;
@@ -28,4 +30,31 @@ export interface Beat {
   coverArtUrl: string;
   audioUrl: string;
   uploadDate: number;
+  description?: string;
+  comments?: Comment[];
+}
+export interface Comment {
+  id: string;
+  beatId: string;
+  userId: string;
+  userName: string;
+  text: string;
+  timestamp: number;
+}
+export interface Battle {
+  id: string;
+  title: string;
+  description: string;
+  startDate: number;
+  endDate: number;
+  status: 'active' | 'completed' | 'upcoming';
+  rules: string[];
+  coverUrl: string;
+  prize?: string;
+}
+export interface Vote {
+  id: string;
+  battleId: string;
+  beatId: string;
+  userId: string;
 }

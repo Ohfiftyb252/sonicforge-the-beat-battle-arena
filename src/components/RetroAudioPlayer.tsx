@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Play, Pause, Volume2, SkipForward, SkipBack, Loader2 } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Play, Pause, Volume2, SkipForward, SkipBack, Loader2, AlertCircle } from 'lucide-react';
 import { Howl } from 'howler';
 import { useAudioPlayer } from '@/hooks/use-audio-player';
 import { Slider } from '@/components/ui/slider';
@@ -8,14 +8,23 @@ export function RetroAudioPlayer() {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const soundRef = useRef<Howl | null>(null);
   const animationRef = useRef<number>();
-  useEffect(() => {
-    if (!currentBeat) return;
+  const cleanup = useCallback(() => {
     if (soundRef.current) {
       soundRef.current.unload();
+      soundRef.current = null;
     }
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  }, []);
+  useEffect(() => {
+    if (!currentBeat) return;
+    cleanup();
     setIsLoading(true);
+    setError(null);
     soundRef.current = new Howl({
       src: [currentBeat.audioUrl],
       html5: true,
@@ -23,16 +32,21 @@ export function RetroAudioPlayer() {
         setDuration(soundRef.current?.duration() || 0);
         setIsLoading(false);
       },
+      onloaderror: () => {
+        setIsLoading(false);
+        setError("SOURCE_LINK_FAILURE");
+        pauseBeat();
+      },
       onend: () => pauseBeat()
     });
-    if (isPlaying) soundRef.current.play();
-    return () => {
-      soundRef.current?.unload();
-    };
-  }, [currentBeat?.id]);
-  useEffect(() => {
     if (isPlaying) {
-      soundRef.current?.play();
+      soundRef.current.play();
+    }
+    return cleanup;
+  }, [currentBeat?.id, cleanup, pauseBeat, isPlaying]);
+  useEffect(() => {
+    if (isPlaying && soundRef.current) {
+      soundRef.current.play();
       const updateProgress = () => {
         const seek = soundRef.current?.seek() as number;
         setProgress(seek || 0);
@@ -53,25 +67,26 @@ export function RetroAudioPlayer() {
   return (
     <div className="fixed bottom-0 left-0 w-full z-[60] bg-dark-bg/95 backdrop-blur-xl border-t border-neon-purple/40 p-4">
       <div className="max-w-7xl mx-auto flex items-center gap-8">
-        {/* Track Info */}
         <div className="hidden md:flex items-center gap-4 w-64">
-          <img src={currentBeat.coverArtUrl} className="w-12 h-12 border border-neon-cyan/50" alt="" />
+          <div className="relative w-12 h-12 border border-neon-cyan/50">
+            <img src={currentBeat.coverArtUrl} className="w-full h-full object-cover" alt="" />
+            {error && <div className="absolute inset-0 bg-red-950/80 flex items-center justify-center"><AlertCircle className="w-4 h-4 text-red-500" /></div>}
+          </div>
           <div className="truncate">
-            <div className="text-neon-cyan font-retro text-sm truncate">{currentBeat.title}</div>
+            <div className="text-neon-cyan font-retro text-sm truncate uppercase">{currentBeat.title}</div>
             <div className="text-muted-foreground font-mono text-[10px] truncate uppercase">{currentBeat.producerName}</div>
           </div>
         </div>
-        {/* Controls */}
         <div className="flex-grow flex flex-col gap-2">
           <div className="flex items-center justify-center gap-6">
-            <button className="text-muted-foreground hover:text-neon-cyan"><SkipBack className="w-5 h-5" /></button>
+            <button className="text-muted-foreground hover:text-neon-cyan transition-colors"><SkipBack className="w-5 h-5" /></button>
             <button 
               onClick={() => isPlaying ? pauseBeat() : playBeat(currentBeat)}
-              className="w-10 h-10 rounded-none bg-neon-purple text-white flex items-center justify-center hover:shadow-glow"
+              className="w-10 h-10 rounded-none bg-neon-purple text-white flex items-center justify-center hover:shadow-glow transition-all"
             >
               {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-1" />}
             </button>
-            <button className="text-muted-foreground hover:text-neon-cyan"><SkipForward className="w-5 h-5" /></button>
+            <button className="text-muted-foreground hover:text-neon-cyan transition-colors"><SkipForward className="w-5 h-5" /></button>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-[10px] font-mono text-neon-cyan w-10 text-right">
@@ -89,7 +104,6 @@ export function RetroAudioPlayer() {
             </span>
           </div>
         </div>
-        {/* Volume */}
         <div className="hidden lg:flex items-center gap-4 w-48">
           <Volume2 className="w-4 h-4 text-muted-foreground" />
           <Slider defaultValue={[80]} max={100} className="w-24" />
