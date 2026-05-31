@@ -12,24 +12,30 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
 import '@/index.css'
 import { HomePage } from '@/pages/HomePage'
-
+import { ExploreBeatsPage } from '@/pages/ExploreBeatsPage'
+import { AppLayout } from '@/components/layout/AppLayout'
+import { AudioPlayerProvider } from '@/context/AudioPlayerContext'
 const queryClient = new QueryClient();
-
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <AppLayout><HomePage /></AppLayout>,
     errorElement: <RouteErrorBoundary />,
   },
+  {
+    path: "/explore",
+    element: <AppLayout><ExploreBeatsPage /></AppLayout>,
+    errorElement: <RouteErrorBoundary />,
+  }
 ]);
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ErrorBoundary>
-        <RouterProvider router={router} />
-      </ErrorBoundary>
+      <AudioPlayerProvider>
+        <ErrorBoundary>
+          <RouterProvider router={router} />
+        </ErrorBoundary>
+      </AudioPlayerProvider>
     </QueryClientProvider>
   </StrictMode>,
 )
-   

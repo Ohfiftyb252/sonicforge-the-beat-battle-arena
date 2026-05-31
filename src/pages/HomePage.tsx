@@ -1,138 +1,73 @@
-// Home page of the app.
-// Currently a demo placeholder "please wait" screen.
-// Replace this file with your actual app UI. Do not delete it to use some other file as homepage. Simply replace the entire contents of this file.
-
-import { useEffect, useMemo, useState } from 'react'
-import { Sparkles } from 'lucide-react'
-
-import { ThemeToggle } from '@/components/ThemeToggle'
-import { HAS_TEMPLATE_DEMO, TemplateDemo } from '@/components/TemplateDemo'
-import { Button } from '@/components/ui/button'
-import { Toaster, toast } from '@/components/ui/sonner'
-
-function formatDuration(ms: number): string {
-  const total = Math.max(0, Math.floor(ms / 1000))
-  const m = Math.floor(total / 60)
-  const s = total % 60
-  return `${m}:${s.toString().padStart(2, '0')}`
-}
-
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Play, Music, Zap, Trophy, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MOCK_BEATS } from '@shared/mock-data';
+import { BeatCard } from '@/components/BeatCard';
 export function HomePage() {
-  const [coins, setCoins] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
-  const [startedAt, setStartedAt] = useState<number | null>(null)
-  const [elapsedMs, setElapsedMs] = useState(0)
-
-  useEffect(() => {
-    if (!isRunning || startedAt === null) return
-
-    const t = setInterval(() => {
-      setElapsedMs(Date.now() - startedAt)
-    }, 250)
-
-    return () => clearInterval(t)
-  }, [isRunning, startedAt])
-
-  const formatted = useMemo(() => formatDuration(elapsedMs), [elapsedMs])
-
-  const onPleaseWait = () => {
-    setCoins((c) => c + 1)
-
-    if (!isRunning) {
-      // Resume from the current elapsed time
-      setStartedAt(Date.now() - elapsedMs)
-      setIsRunning(true)
-      toast.success('Building your app…', {
-        description: "Hang tight — we're setting everything up.",
-      })
-      return
-    }
-
-    setIsRunning(false)
-    toast.info('Still working…', {
-      description: 'You can come back in a moment.',
-    })
-  }
-
-  const onReset = () => {
-    setCoins(0)
-    setIsRunning(false)
-    setStartedAt(null)
-    setElapsedMs(0)
-    toast('Reset complete')
-  }
-
-  const onAddCoin = () => {
-    setCoins((c) => c + 1)
-    toast('Coin added')
-  }
-
+  const featuredBeats = MOCK_BEATS.slice(0, 4);
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden relative">
-      <ThemeToggle />
-      <div className="absolute inset-0 bg-gradient-rainbow opacity-10 dark:opacity-20 pointer-events-none" />
-
-      <div className="text-center space-y-8 relative z-10 animate-fade-in w-full">
-        <div className="flex justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-primary floating">
-            <Sparkles className="w-8 h-8 text-white rotating" />
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <h1 className="text-5xl md:text-7xl font-display font-bold text-balance leading-tight">
-            Creating your <span className="text-gradient">app</span>
+    <div className="space-y-24">
+      {/* Hero Section */}
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.15)_0%,transparent_70%)]" />
+        <div className="text-center space-y-8 z-10">
+          <h1 className="text-6xl md:text-8xl font-retro text-neon-purple tracking-tighter animate-pulse">
+            SONIC FORGE
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto text-pretty">
-            Your application would be ready soon.
+          <p className="text-xl md:text-2xl text-muted-foreground font-mono max-w-2xl mx-auto uppercase tracking-widest">
+            Enter the arena. Forge your sound. Dominate the battle.
           </p>
-        </div>
-
-        {HAS_TEMPLATE_DEMO ? (
-          <div className="max-w-5xl mx-auto text-left">
-            <TemplateDemo />
+          <div className="flex flex-wrap justify-center gap-6">
+            <Button asChild size="lg" className="btn-retro-primary text-xl px-10 h-16">
+              <Link to="/explore">EXPLORE BEATS</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-neon-cyan text-neon-cyan hover:bg-neon-cyan/10 text-xl px-10 h-16">
+              <Link to="/battles">JOIN BATTLE</Link>
+            </Button>
           </div>
-        ) : (
-          <>
-            <div className="flex justify-center gap-4">
-              <Button
-                size="lg"
-                onClick={onPleaseWait}
-                className="btn-gradient px-8 py-4 text-lg font-semibold hover:-translate-y-0.5 transition-all duration-200"
-                aria-live="polite"
-              >
-                Please Wait
-              </Button>
+        </div>
+      </section>
+      {/* Trending Section */}
+      <section className="max-w-7xl mx-auto px-4 space-y-10">
+        <div className="flex items-center justify-between border-b border-neon-purple/30 pb-4">
+          <h2 className="text-3xl font-retro text-neon-purple flex items-center gap-3 uppercase">
+            <Music className="w-8 h-8" /> Trending Beats
+          </h2>
+          <Link to="/explore" className="text-neon-cyan hover:underline font-mono text-sm uppercase">View All -{'>'}</Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {featuredBeats.map((beat) => (
+            <BeatCard key={beat.id} beat={beat} />
+          ))}
+        </div>
+      </section>
+      {/* Features Grid */}
+      <section className="max-w-7xl mx-auto px-4 py-20 bg-muted/30 border-y border-neon-cyan/20">
+        <div className="grid md:grid-cols-3 gap-12">
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-neon-purple/20 border border-neon-purple rounded-none mx-auto flex items-center justify-center">
+              <Zap className="text-neon-purple w-8 h-8" />
             </div>
-
-            <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div>
-                Time elapsed:{' '}
-                <span className="font-medium tabular-nums text-foreground">{formatted}</span>
-              </div>
-              <div>
-                Coins:{' '}
-                <span className="font-medium tabular-nums text-foreground">{coins}</span>
-              </div>
+            <h3 className="text-xl font-retro uppercase">High Fidelity</h3>
+            <p className="text-muted-foreground font-mono text-sm">Lossless audio processing at the edge. Experience every transient.</p>
+          </div>
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-neon-cyan/20 border border-neon-cyan rounded-none mx-auto flex items-center justify-center">
+              <Trophy className="text-neon-cyan w-8 h-8" />
             </div>
-
-            <div className="flex justify-center gap-2">
-              <Button variant="outline" size="sm" onClick={onReset}>
-                Reset
-              </Button>
-              <Button variant="outline" size="sm" onClick={onAddCoin}>
-                Add Coin
-              </Button>
+            <h3 className="text-xl font-retro uppercase">Global Battles</h3>
+            <p className="text-muted-foreground font-mono text-sm">Compete against the world's best producers in themed arenas.</p>
+          </div>
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-electric-orange/20 border border-electric-orange rounded-none mx-auto flex items-center justify-center">
+              <User className="text-electric-orange w-8 h-8" />
             </div>
-          </>
-        )}
-      </div>
-
-      <footer className="absolute bottom-8 text-center text-muted-foreground/80">
-        <p>Powered by Cloudflare</p>
-      </footer>
-
-      <Toaster richColors closeButton />
+            <h3 className="text-xl font-retro uppercase">Forge Identity</h3>
+            <p className="text-muted-foreground font-mono text-sm">Build your profile, gain followers, and sell your signature kits.</p>
+          </div>
+        </div>
+      </section>
     </div>
-  )
+  );
 }
