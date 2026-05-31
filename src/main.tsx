@@ -11,55 +11,25 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
 import '@/index.css'
-import { HomePage } from '@/pages/HomePage'
-import { ExploreBeatsPage } from '@/pages/ExploreBeatsPage'
-import { BattlesPage } from '@/pages/BattlesPage'
-import { BeatDetailPage } from '@/pages/BeatDetailPage'
-import { SubmitBeatPage } from '@/pages/SubmitBeatPage'
-import { ProducerProfilePage } from '@/pages/ProducerProfilePage'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { AudioPlayerProvider } from '@/context/AudioPlayerContext'
+import { LabPage } from '@/pages/LabPage';
+import { LabProvider } from '@/context/LabContext';
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout><HomePage /></AppLayout>,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/explore",
-    element: <AppLayout><ExploreBeatsPage /></AppLayout>,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/battles",
-    element: <AppLayout><BattlesPage /></AppLayout>,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/beats/:id",
-    element: <AppLayout><BeatDetailPage /></AppLayout>,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/submit",
-    element: <AppLayout><SubmitBeatPage /></AppLayout>,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/profile/:id",
-    element: <AppLayout><ProducerProfilePage /></AppLayout>,
+    element: <LabPage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AudioPlayerProvider>
+      <LabProvider>
+        <div className="scanline-overlay" />
         <ErrorBoundary>
           <RouterProvider router={router} />
         </ErrorBoundary>
-      </AudioPlayerProvider>
+      </LabProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

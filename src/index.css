@@ -3,61 +3,53 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --background: 222 47% 4%;
-    --foreground: 180 100% 98%;
-    --primary: 270 90% 60%;
+    --background: 0 0% 4%;
+    --foreground: 48 95% 54%;
+    --primary: 0 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --muted: 222 47% 10%;
-    --muted-foreground: 222 10% 70%;
-    --border: 180 80% 50% / 0.2;
-    --ring: 180 80% 50%;
-    --card: 222 47% 6%;
-    --card-foreground: 180 100% 98%;
-    --popover: 222 47% 5%;
-    --popover-foreground: 180 100% 98%;
-    --secondary: 30 100% 50%;
-    --secondary-foreground: 0 0% 0%;
-    --accent: 180 80% 50%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --input: 222 47% 12%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%;
+    --border: 48 95% 54% / 0.2;
+    --ring: 48 95% 54%;
+    --card: 0 0% 6%;
+    --card-foreground: 48 95% 54%;
     --radius: 0px;
   }
-  .dark {
-    --background: 222 47% 4%;
-    --foreground: 180 100% 98%;
-  }
+}
+@layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans selection:bg-neon-cyan selection:text-black;
+    @apply bg-background text-foreground font-sans selection:bg-safety-yellow selection:text-black antialiased overflow-x-hidden;
     background-image: 
       linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-      linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
     background-size: 100% 2px, 3px 100%;
   }
 }
 @layer components {
-  .text-neon {
-    text-shadow: 0 0 5px theme('colors.neon-cyan'), 0 0 10px theme('colors.neon-cyan');
+  .border-safety {
+    background: repeating-linear-gradient(
+      45deg,
+      #F9D71C,
+      #F9D71C 10px,
+      #000 10px,
+      #000 20px
+    );
   }
-  .text-neon-purple {
-    text-shadow: 0 0 5px theme('colors.neon-purple'), 0 0 10px theme('colors.neon-purple');
+  .text-warning {
+    @apply text-safety-yellow font-retro uppercase tracking-widest;
   }
-  .btn-retro-primary {
-    @apply bg-neon-purple text-white px-6 py-2 border-2 border-white/20 hover:bg-neon-purple/80 hover:shadow-glow transition-all active:translate-y-0.5;
+  .lab-card {
+    @apply bg-industrial-gray/40 border border-safety-yellow/20 backdrop-blur-sm transition-all;
   }
-  .card-retro {
-    @apply bg-black/40 backdrop-blur-md border border-neon-cyan/20 shadow-neon-glow hover:border-neon-cyan/50 transition-all;
-  }
-  .input-terminal {
-    @apply bg-black/60 border border-neon-cyan/30 text-neon-cyan placeholder:text-neon-cyan/50 focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan;
+  .btn-industrial {
+    @apply bg-safety-yellow text-black font-retro uppercase px-4 py-2 hover:bg-white active:scale-95 transition-all disabled:opacity-50;
   }
   .scanline-overlay {
-    @apply fixed inset-0 pointer-events-none z-[100] opacity-[0.03] animate-scanline-pulse;
-    background: linear-gradient(to bottom, transparent 50%, black 50%);
-    background-size: 100% 4px;
+    @apply fixed inset-0 pointer-events-none z-[100] opacity-[0.05] animate-scanline-slow;
+    background: linear-gradient(to bottom, transparent, rgba(249, 215, 28, 0.2) 50%, transparent);
+    height: 100px;
   }
 }
