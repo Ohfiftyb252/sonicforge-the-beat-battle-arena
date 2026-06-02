@@ -1,6 +1,6 @@
 # Cloudflare Full-Stack Starter
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Ohfiftyb252/sonicforge-the-beat-battle-arena)
 
 A production-ready full-stack starter template featuring React, TypeScript, Tailwind CSS, and Cloudflare Workers with Durable Objects for scalable stateful entities.
 
@@ -100,7 +100,7 @@ Key implementation files:
 
 ## Deployment
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Ohfiftyb252/sonicforge-the-beat-battle-arena)
 
 ### Deploy to Cloudflare
 
